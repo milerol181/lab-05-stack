@@ -6,10 +6,13 @@
 #define TEMPLATE_STACK_HPP
 #include <iostream>
 template <typename T>
-class stack
-{
+class Stack {
  public:
-  stack() : element_top(nullptr) {};
+  Stack() : element_top(nullptr) {};
+  Stack(const Stack& stack) = delete; // конструктор копирования (запрещен)
+  Stack(Stack&& stack) = default; // конструктор перемещения
+  Stack &operator=(const Stack& stack) = delete; //перегрузка копирования
+  Stack &operator=(Stack && stack)  = default; //перегрузка перемещения
   void push(T&& value){
     node* new_node = new node;
     new_node->data = value;
@@ -33,7 +36,7 @@ class stack
     return element_top->data;
   }
 
-  ~stack(){
+  ~Stack(){
     while (element_top){
     node *delete_node = element_top;
     element_top = delete_node->element_next;
