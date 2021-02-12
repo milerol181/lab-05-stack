@@ -19,11 +19,11 @@ class no_copy_stack
     element_top = new_node;
   }
   const T& head() const {
-    if (empty()) throw std::string("Stack is empty!");
+    if (empty()) throw std::runtime_error("Stack is empty!");
     return element_top->data;
   }
   T pop() {
-    if (empty()) throw std::string("Stack is empty!");
+    if (empty()) throw std::runtime_error("Stack is empty!");
     node<T> *delete_node = element_top;
     element_top = delete_node->element_next;
     delete delete_node;
