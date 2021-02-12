@@ -6,6 +6,11 @@
 #define TEMPLATE_STACK_HPP
 #include <iostream>
 template <typename T>
+struct node {
+  T data;
+  node* element_next;
+};
+template <typename T>
 class Stack {
  public:
   Stack() : element_top(nullptr) {};
@@ -14,20 +19,20 @@ class Stack {
   Stack &operator=(const Stack& stack) = delete; //перегрузка копирования
   Stack &operator=(Stack && stack)  = default; //перегрузка перемещения
   void push(T&& value){
-    node* new_node = new node;
+    node<T>* new_node = new node<T>;
     new_node->data = value;
     new_node->element_next = element_top;
     element_top = new_node;
   }
   void push(const T& value) {
-      node* new_node = new node;
+      node<T>* new_node = new node<T>;
       new_node->data = value;
       new_node->element_next = element_top;
-      element_top = new_node;
+      element_top = std::move(new_node);
   }
   void pop() {
     if (empty()) throw std::string("Stack is empty!");
-    node *delete_node = element_top;
+    node<T> *delete_node = element_top;
     element_top = delete_node->element_next;
     delete delete_node;
   }
@@ -38,7 +43,7 @@ class Stack {
 
   ~Stack(){
     while (element_top){
-    node *delete_node = element_top;
+    node<T> *delete_node = element_top;
     element_top = delete_node->element_next;
     delete delete_node;
     }
@@ -49,11 +54,7 @@ class Stack {
     return element_top == nullptr;
   }
  private:
-  struct node {
-    T data;
-    node* element_next;
-  };
-  node* element_top;
+  node<T> *element_top;
 };
 
 #endif  // TEMPLATE_STACK_HPP
