@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include "Stack.hpp"
 #include <string>
-#include <no_copy_stack.hpp>
+#include "no_copy_stack.hpp"
 
 TEST(Example, EmptyTest) {
     EXPECT_TRUE(true);
@@ -116,7 +116,81 @@ TEST(big_data_no_copy, test_check) {
   EXPECT_FALSE(std::is_copy_assignable<big_data_no_copy<unsigned>>
                ::value);
 }
-TEST(no_copy_stack, test_push) {
-  no_copy_stack<unsigned> buffer_2;
+TEST(no_copy_stack, test_push_head) {
+  no_copy_stack<int> buffer_2;
   EXPECT_THROW(buffer_2.head(), std::runtime_error);
+  no_copy_stack<big_data_no_copy<unsigned>> buf;
+  big_data_no_copy<unsigned> test_1 (1, 7, 7);
+  big_data_no_copy<unsigned> test_2 (4, 8, 9);
+  big_data_no_copy<unsigned> test_3 (5, 5, 5);
+  buf.push(std::move(test_1));
+  buf.push(std::move(test_2));
+  buf.push(std::move(test_3));
+  EXPECT_EQ(buf.head().value_3, test_3.value_3);
+  EXPECT_EQ(buf.head().value_2, test_3.value_2);
+  EXPECT_EQ(buf.head().value_1, test_3.value_1);
+}
+TEST(no_copy_stack, test_pop_head) {
+  no_copy_stack<int> buffer_2;
+  EXPECT_THROW(buffer_2.head(), std::runtime_error);
+  no_copy_stack<big_data_no_copy<unsigned>> buf;
+  big_data_no_copy<unsigned> test_1 (1, 7, 7);
+  big_data_no_copy<unsigned> test_2 (4, 8, 9);
+  big_data_no_copy<unsigned> test_3 (5, 5, 5);
+  buf.push(std::move(test_1));
+  buf.push(std::move(test_2));
+  buf.push(std::move(test_3));
+  buf.pop();
+  EXPECT_EQ(buf.head().value_3, test_2.value_3);
+  EXPECT_EQ(buf.head().value_2, test_2.value_2);
+  EXPECT_EQ(buf.head().value_1, test_2.value_1);
+}
+TEST(no_copy_stack, test_push_emplace_head) {
+  no_copy_stack<int> buffer_2;
+  EXPECT_THROW(buffer_2.head(), std::runtime_error);
+  no_copy_stack<big_data_no_copy<int>> buf;
+  big_data_no_copy<int> test_1 (1, 7, 7);
+  big_data_no_copy<int> test_2 (4, 8, 9);
+  big_data_no_copy<int> test_3 (5, 5, 5);
+  buf.push_emplace(1, 7, 7);
+  buf.push_emplace(4, 8, 9);
+  buf.push_emplace(5, 5, 5);
+  EXPECT_EQ(buf.head().value_3, test_3.value_3);
+  EXPECT_EQ(buf.head().value_2, test_3.value_2);
+  EXPECT_EQ(buf.head().value_1, test_3.value_1);
+}
+TEST(no_copy_stack, test_move){
+  EXPECT_EQ(std::is_move_constructible<no_copy_stack<unsigned>>::value, true);
+  EXPECT_EQ(std::is_move_assignable<no_copy_stack<unsigned>>::value, true);
+  EXPECT_TRUE(std::is_move_constructible
+                  <no_copy_stack<big_data_no_copy<std::string>>>::value);
+  EXPECT_TRUE(std::is_move_assignable
+                  <no_copy_stack<big_data_no_copy<std::string>>>::value);
+  EXPECT_TRUE(std::is_move_constructible
+                  <no_copy_stack<big_data_no_copy<unsigned>>>::value);
+  EXPECT_TRUE(std::is_move_assignable
+                  <no_copy_stack<big_data_no_copy<unsigned>>>::value);
+}
+TEST(no_copy_stack, test_copy){
+  EXPECT_FALSE(std::is_copy_constructible<no_copy_stack<unsigned>>
+               ::value);
+  EXPECT_FALSE(std::is_copy_assignable<no_copy_stack<unsigned>>
+               ::value);
+  EXPECT_FALSE(std::is_copy_constructible<no_copy_stack<double>>
+                   ::value);
+  EXPECT_FALSE(std::is_copy_assignable<no_copy_stack<double>>
+                   ::value);
+  EXPECT_FALSE(std::is_copy_constructible
+                   <no_copy_stack<big_data_no_copy<std::string>>>
+               ::value);
+  EXPECT_FALSE(std::is_copy_assignable
+                   <no_copy_stack<big_data_no_copy<std::string>>>
+               ::value);
+  EXPECT_FALSE(std::is_copy_constructible
+                   <no_copy_stack<big_data_no_copy<unsigned>>>
+                   ::value);
+  EXPECT_FALSE(std::is_copy_assignable
+                   <no_copy_stack<big_data_no_copy<unsigned>>>
+                   ::value);
+
 }

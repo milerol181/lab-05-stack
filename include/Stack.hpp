@@ -2,8 +2,8 @@
 // Created by milerol on 09.02.2021.
 //
 
-#ifndef TEMPLATE_STACK_HPP
-#define TEMPLATE_STACK_HPP
+#ifndef LAB_05_STACK_STACK_HPP
+#define LAB_05_STACK_STACK_HPP
 #include <iostream>
 template <typename T>
 struct node {
@@ -57,4 +57,4 @@ class Stack {
   node<T> *element_top;
 };
 
-#endif  // TEMPLATE_STACK_HPP
+#endif  // LAB_05_STACK_STACK_HPP
