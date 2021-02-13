@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include "Stack.hpp"
 #include <string>
+#include <no_copy_stack.hpp>
 
 TEST(Example, EmptyTest) {
     EXPECT_TRUE(true);
@@ -85,4 +86,37 @@ TEST(stack, test_move){
                   <Stack<big_data<std::string>>>::value);
   EXPECT_TRUE(std::is_move_assignable
                   <Stack<big_data<std::string>>>::value);
+}
+TEST(stack, test_copy){
+  EXPECT_FALSE(std::is_copy_constructible<Stack<unsigned>>::value);
+  EXPECT_FALSE(std::is_copy_assignable<Stack<unsigned>>::value);
+  EXPECT_FALSE(std::is_copy_constructible
+                  <Stack<big_data<std::string>>>::value);
+  EXPECT_FALSE(std::is_copy_assignable
+                  <Stack<big_data<std::string>>>::value);
+}
+template<typename T>
+struct big_data_no_copy{
+  big_data_no_copy(T v1, T v2, T v3) : value_1(v1),value_2(v2),value_3(v3) {};
+  big_data_no_copy(const big_data_no_copy& big_data_no_copy) = delete; // конструктор копирования (запрещен)
+  big_data_no_copy(big_data_no_copy&& big_data_no_copy) = default; // конструктор перемещения
+  big_data_no_copy &operator=(const big_data_no_copy& big_data_no_copy) = delete; //перегрузка копирования
+  big_data_no_copy &operator=(big_data_no_copy && big_data_no_copy)  = default; //перегрузка перемещения
+  T value_1;
+  T value_2;
+  T value_3;
+};
+TEST(big_data_no_copy, test_check) {
+  EXPECT_TRUE(std::is_move_constructible<big_data_no_copy<unsigned>>
+              ::value);
+  EXPECT_TRUE(std::is_move_assignable<big_data_no_copy<unsigned>>
+              ::value);
+  EXPECT_FALSE(std::is_copy_constructible<big_data_no_copy<unsigned>>
+               ::value);
+  EXPECT_FALSE(std::is_copy_assignable<big_data_no_copy<unsigned>>
+               ::value);
+}
+TEST(no_copy_stack, test_push) {
+  no_copy_stack<unsigned> buffer_2;
+  EXPECT_THROW(buffer_2.head(), std::runtime_error);
 }
